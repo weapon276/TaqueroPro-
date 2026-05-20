@@ -50,6 +50,8 @@
             font-size: 16px;
             text-align: center;
             background: white;
+            width: 80%;
+            max-width: 300px;
         }
 
         .nav-tabs {
@@ -121,7 +123,7 @@
             color: #555;
         }
 
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 10px;
             border: 2px solid #e0e0e0;
@@ -139,6 +141,10 @@
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
         }
 
         .grid-2 {
@@ -203,6 +209,13 @@
                 padding: 8px 5px;
             }
         }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.9);
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -212,12 +225,12 @@
     </div>
 
     <div class="nav-tabs">
-        <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
-        <button class="tab-btn" onclick="showTab('tacos')">🌮 Precios</button>
-        <button class="tab-btn" onclick="showTab('gastos')">💰 Gastos</button>
-        <button class="tab-btn" onclick="showTab('ventas')">💵 Ventas</button>
-        <button class="tab-btn" onclick="showTab('inventario')">📦 Inventario</button>
-        <button class="tab-btn" onclick="showTab('reportes')">📈 Reportes</button>
+        <button class="tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+        <button class="tab-btn" data-tab="tacos">🌮 Precios</button>
+        <button class="tab-btn" data-tab="gastos">💰 Gastos</button>
+        <button class="tab-btn" data-tab="ventas">💵 Ventas</button>
+        <button class="tab-btn" data-tab="inventario">📦 Inventario</button>
+        <button class="tab-btn" data-tab="reportes">📈 Reportes</button>
     </div>
 
     <!-- Dashboard -->
@@ -262,7 +275,7 @@
             </div>
             <div class="form-group">
                 <label>📊 Porcentaje de ganancia deseado (%)</label>
-                <input type="number" id="gananciaPorcentaje" step="1" placeholder="40">
+                <input type="number" id="gananciaPorcentaje" step="1" placeholder="40" value="40">
             </div>
             <button onclick="calcularPrecioTaco()">🔢 Calcular precio sugerido</button>
             <div id="precioResultado" class="alert" style="margin-top: 15px; display: none;"></div>
@@ -367,16 +380,14 @@
                 <button onclick="mostrarPremiumModal()" style="background: #FFD700; color: #333;">💰 Desbloquear por $499 MXN (pago único)</button>
             </div>
         </div>
-        <div id="inventarioContent" style="display: none;">
-            <!-- El contenido premium se carga aquí después del pago -->
-        </div>
+        <div id="inventarioContent" style="display: none;"></div>
     </div>
 
     <!-- Reportes -->
     <div id="reportes" class="tab-content">
         <div class="card">
             <h3>📊 Reportes financieros</h3>
-            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
                 <button onclick="generarReporte('diario')">📅 Diario</button>
                 <button onclick="generarReporte('semanal')">📆 Semanal</button>
                 <button onclick="generarReporte('mensual')">📊 Mensual</button>
@@ -398,9 +409,9 @@
         </div>
     </div>
 
-    <footer style="text-align: center; padding: 20px; background: rgba(255,255,255,0.9); margin-top: 30px;">
+    <footer>
         <p>✨ Creado por <strong>weapon276</strong> | 📱 ¿Necesitas una web para tu negocio?</p>
-        <p style="font-size: 12px;">TaqueroPro v1.0 - para tu negocio</p>
+        <p style="font-size: 12px;">TaqueroPro v1.0 - PWA para tu negocio</p>
     </footer>
 
     <script src="app.js"></script>
