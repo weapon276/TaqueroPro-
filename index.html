@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#D32F2F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mi Taqueria">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>TaqueroPro - Control para tu negocio</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #D32F2F 0%, #F57C00 100%);
+            color: #333;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: #D32F2F;
+        }
+
+        .business-name-input {
+            margin-top: 10px;
+            padding: 8px;
+            border: 2px solid #FF9800;
+            border-radius: 10px;
+            font-size: 16px;
+            text-align: center;
+            background: white;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            padding: 10px;
+            gap: 5px;
+            overflow-x: auto;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #D32F2F 0%, #F57C00 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: #D32F2F;
+            border-left: 4px solid #F57C00;
+            padding-left: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #D32F2F 0%, #F57C00 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .record-item {
+            background: #f8f9fa;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #F57C00;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 90%;
+            text-align: center;
+        }
+
+        .premium-badge {
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .alert {
+            background: #ffeb3b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .tab-btn {
+                font-size: 10px;
+                padding: 8px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 id="businessName">🌮 TaqueroPro</h1>
+        <input type="text" id="businessNameInput" class="business-name-input" placeholder="Nombre de tu negocio" value="Mi Taquería">
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
+        <button class="tab-btn" onclick="showTab('tacos')">🌮 Precios</button>
+        <button class="tab-btn" onclick="showTab('gastos')">💰 Gastos</button>
+        <button class="tab-btn" onclick="showTab('ventas')">💵 Ventas</button>
+        <button class="tab-btn" onclick="showTab('inventario')">📦 Inventario</button>
+        <button class="tab-btn" onclick="showTab('reportes')">📈 Reportes</button>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="tab-content active">
+        <div class="card">
+            <h3>📊 Resumen del Día</h3>
+            <div id="dailySummary"></div>
+        </div>
+        <div class="grid-2">
+            <div class="card">
+                <h3>💰 Ventas por método</h3>
+                <div id="salesChart" style="height: 250px;"></div>
+            </div>
+            <div class="card">
+                <h3>📈 Ganancias vs Gastos</h3>
+                <div id="profitChart" style="height: 250px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Precios de tacos -->
+    <div id="tacos" class="tab-content">
+        <div class="card">
+            <h3>🌮 Calcular precio de taco</h3>
+            <div class="grid-2">
+                <div>
+                    <label>🥩 Costo de carne (kg)</label>
+                    <input type="number" id="carneCosto" step="0.01" placeholder="$180">
+                </div>
+                <div>
+                    <label>🌽 Costo de tortilla (kg)</label>
+                    <input type="number" id="tortillaCosto" step="0.01" placeholder="$30">
+                </div>
+                <div>
+                    <label>🥬 Costo de verdura (porción)</label>
+                    <input type="number" id="verduraCosto" step="0.01" placeholder="$5">
+                </div>
+                <div>
+                    <label>🌶️ Costo de salsa (porción)</label>
+                    <input type="number" id="salsaCosto" step="0.01" placeholder="$3">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>📊 Porcentaje de ganancia deseado (%)</label>
+                <input type="number" id="gananciaPorcentaje" step="1" placeholder="40">
+            </div>
+            <button onclick="calcularPrecioTaco()">🔢 Calcular precio sugerido</button>
+            <div id="precioResultado" class="alert" style="margin-top: 15px; display: none;"></div>
+        </div>
+        <div class="card">
+            <h3>💡 Consejo profesional</h3>
+            <p id="consejoPrecio">El porcentaje ideal para taquerías es entre 35-45%. Ajusta según tu zona.</p>
+        </div>
+    </div>
+
+    <!-- Gastos -->
+    <div id="gastos" class="tab-content">
+        <div class="card">
+            <h3>➕ Registrar gasto</h3>
+            <form id="gastoForm">
+                <div class="form-group">
+                    <label>📅 Fecha</label>
+                    <input type="date" id="gastoFecha" required>
+                </div>
+                <div class="form-group">
+                    <label>🏷️ Categoría</label>
+                    <select id="gastoCategoria">
+                        <option value="carne">Carne</option>
+                        <option value="verdura">Verdura</option>
+                        <option value="tortilla">Tortilla</option>
+                        <option value="salsa">Salsa</option>
+                        <option value="servicios">Servicios (luz, agua, gas)</option>
+                        <option value="renta">Renta local</option>
+                        <option value="gasolina">Gasolina</option>
+                        <option value="personal">Personal/Sueldos</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📝 Descripción</label>
+                    <input type="text" id="gastoDesc" required>
+                </div>
+                <div class="form-group">
+                    <label>💰 Monto</label>
+                    <input type="number" id="gastoMonto" step="0.01" required>
+                </div>
+                <button type="submit">✅ Registrar gasto</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3>📜 Historial de gastos</h3>
+            <div id="gastosList"></div>
+        </div>
+    </div>
+
+    <!-- Ventas -->
+    <div id="ventas" class="tab-content">
+        <div class="card">
+            <h3>💵 Registrar venta</h3>
+            <form id="ventaForm">
+                <div class="form-group">
+                    <label>📅 Fecha</label>
+                    <input type="date" id="ventaFecha" required>
+                </div>
+                <div class="form-group">
+                    <label>🌮 Número de tacos vendidos</label>
+                    <input type="number" id="tacosVendidos" required>
+                </div>
+                <div class="form-group">
+                    <label>💰 Precio por taco ($)</label>
+                    <input type="number" id="precioTaco" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>💳 Método de pago</label>
+                    <select id="metodoPago">
+                        <option value="efectivo">Efectivo</option>
+                        <option value="tarjeta">Tarjeta</option>
+                    </select>
+                </div>
+                <div class="form-group" id="comisionGroup" style="display: none;">
+                    <label>💸 Comisión terminal (%)</label>
+                    <input type="number" id="comisionTerminal" step="0.1" value="3.5">
+                </div>
+                <button type="submit">✅ Registrar venta</button>
+            </form>
+        </div>
+        <div class="card">
+            <h3>📜 Historial de ventas</h3>
+            <div id="ventasList"></div>
+        </div>
+    </div>
+
+    <!-- Inventario (Premium) -->
+    <div id="inventario" class="tab-content">
+        <div class="card" id="premiumLockModal">
+            <h3>🔒 Inventario Premium</h3>
+            <div style="text-align: center; padding: 40px 20px;">
+                <div style="font-size: 50px;">🔐</div>
+                <h4>Característica Premium</h4>
+                <p>Desbloquea el control de inventario completo:</p>
+                <ul style="text-align: left; margin: 20px;">
+                    <li>✅ Control de stock en tiempo real</li>
+                    <li>✅ Alertas de productos bajos</li>
+                    <li>✅ Fechas de caducidad</li>
+                    <li>✅ Costo por unidad</li>
+                </ul>
+                <button onclick="mostrarPremiumModal()" style="background: #FFD700; color: #333;">💰 Desbloquear por $499 MXN (pago único)</button>
+            </div>
+        </div>
+        <div id="inventarioContent" style="display: none;">
+            <!-- El contenido premium se carga aquí después del pago -->
+        </div>
+    </div>
+
+    <!-- Reportes -->
+    <div id="reportes" class="tab-content">
+        <div class="card">
+            <h3>📊 Reportes financieros</h3>
+            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <button onclick="generarReporte('diario')">📅 Diario</button>
+                <button onclick="generarReporte('semanal')">📆 Semanal</button>
+                <button onclick="generarReporte('mensual')">📊 Mensual</button>
+                <button onclick="generarReporte('anual')">📈 Anual</button>
+            </div>
+            <div id="reporteResultado"></div>
+        </div>
+    </div>
+
+    <!-- Modal Premium -->
+    <div id="premiumModal" class="modal">
+        <div class="modal-content">
+            <h3>💰 Desbloquear Inventario Premium</h3>
+            <p>Pago único de <strong>$499 MXN</strong></p>
+            <p>✅ Acceso de por vida</p>
+            <p>✅ Actualizaciones gratuitas</p>
+            <button onclick="simularPago()" style="margin: 10px;">💳 Simular pago</button>
+            <button onclick="cerrarPremiumModal()" style="background: #ccc;">❌ Cancelar</button>
+        </div>
+    </div>
+
+    <footer style="text-align: center; padding: 20px; background: rgba(255,255,255,0.9); margin-top: 30px;">
+        <p>✨ Creado por <strong>weapon276</strong> | 📱 ¿Necesitas una web para tu negocio?</p>
+        <p style="font-size: 12px;">TaqueroPro v1.0 - PWA para tu negocio</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
